@@ -73,6 +73,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }} 
         script: |
-          docker pull victorzh22/infra_actions_vzh
+          docker pull ${{ secrets.USER }}/infra_actions_vzh
           docker stop $(docker ps -a -q)
-          docker run --rm -d -p 5000:5000 victorzh22/infra_actions_vzh
+          docker run --rm -d -p 5000:5000 ${{ secrets.USER }}/infra_actions_vzh
