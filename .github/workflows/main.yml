@@ -21,8 +21,8 @@ jobs:
         python-version: 3.7
 
     - name: Install dependencies
-      run: | 
-        # обновление pip
+      run: |
+        export SECRET_KEY=${{ secrets.SECRET_KEY }}
         python -m pip install --upgrade pip 
         # установка flake8 и его плагинов
         pip install flake8 pep8-naming flake8-broken-line flake8-return flake8-isort
@@ -31,12 +31,10 @@ jobs:
 
     - name: Test with flake8 and django tests
       run: |
-        # запуск проверки проекта по flake8
+        export SECRET_KEY=${{ secrets.SECRET_KEY }}
         python -m flake8
-        # перейти в папку, содержащую manage.py — 
-        #<корневая_папка_infra_actions>/<папка_проекта>/manage.py
+        # <корневая_папка_infra_actions>/<папка_проекта>/manage.py
         cd infra_project/
-        # запустить написанные разработчиком тесты
         python manage.py test
 
 build_and_push_to_docker_hub:
@@ -74,8 +72,6 @@ deploy:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }} 
         script: |
-          # Выполняет pull образа с DockerHub
           sudo docker pull victorzh22/infra_actions_vzh
-          #остановка всех контейнеров
           sudo docker stop $(sudo docker ps -a -q)
           sudo docker run --rm -d -p 5000:5000 victorzh22/infra_actions_vzh
